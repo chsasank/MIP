@@ -25,7 +25,6 @@ elseif strcmp(type, 'Cosine')
     H = abs(w).*cos(0.5*pi*w/L);
     H(abs(w)> L) = 0;       
 end
-H = H/sqrt(sum(H(:).^2));
 
 H = ifftshift(H);
 H = repmat(H,1,size(R,2));
