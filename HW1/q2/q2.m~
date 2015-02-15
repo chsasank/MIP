@@ -1,6 +1,0 @@
-f = phantom(128);
-theta = 0:3:177;
-R = radon(f,theta);
-
-%% 
-fR = iradon(R,theta,'linear','none');
