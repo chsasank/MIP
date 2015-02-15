@@ -63,7 +63,7 @@ mask = fspecial ('gaussian', 51, 5);
 f5 = conv2 (f, mask, 'same');
 figure
 imshow(f5)
-
+clc
 %%
 % Compute radon tranform
 R0 = radon(f0,theta);
