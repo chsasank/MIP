@@ -1,5 +1,6 @@
 %% Question 2
-
+%
+%% Compute Radon transform
 clc;clear;close all;
 f = phantom(256);
 figure
@@ -33,9 +34,6 @@ f_recon = backproj(R_filtered,theta);
 figure
 imshow(f_recon)
 %%
-% Observe that reconstructed image got smoother
-
-%%
 % <html><h3>Cosine filter</h3></html>
 R_filtered = myFilter(R, 0.5,'Cosine');
 f_recon = backproj(R_filtered,theta);
@@ -47,7 +45,13 @@ f_recon = backproj(R_filtered,theta);
 figure
 imshow(f_recon)
 %%
-% Observe that reconstructed image got even smoother
+% <html><h3>Observation</h3></html>
+%%
+% Images on the right i.e. those filtered with $L = w_max$ has more higher
+% freqeuncy components like 'dots' etc. This is because higher frequencies
+% are let in by the filter.
+% Also, images reconstructed gets smoother with the filters as expected from
+% the frequency response of the filters.
 
 %% Part b:
 % Generate blurred images
@@ -93,6 +97,14 @@ imshow(f_recon5)
 disp(RRMSE(f0,f_recon0))
 disp(RRMSE(f1,f_recon1))
 disp(RRMSE(f5,f_recon5))
+%%
+% <html><h3>Observation:</h3></html>
+%%
+%  As can be seen from above, RRMSE is the highest for the unblurred image 
+%  and least for the highest blurred image. This is because a) there is 
+%  noise from discretization of theta b) this noise is mitigated because of 
+%  gaussian blur of the image S5. So highest blurred image has least error.
+
 
 %% Part c
 h = waitbar(0,'Please wait...');
@@ -124,4 +136,9 @@ plot(RRMSE1_history,'r')
 plot(RRMSE5_history,'g')
 legend('RRMSE of S0','RRMSE of S1','RRMSE of S5')
 
-close all
+%%
+% <html><h3>Observation:</h3></html>
+%%
+%  RRMSE is highest for L = 1. This is because this means that there is no
+%  filtering and making most frequency components 0. It increases again
+%  because now noise is being amplified with large L.
