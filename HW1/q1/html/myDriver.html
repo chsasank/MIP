@@ -1,0 +1,361 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myDriver</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-16"><meta name="DC.source" content="myDriver.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Computing Radon transform of an Image</a></li><li><a href="#5">1-D plots of Radon Transform vs t for various theta</a></li><li><a href="#8">Part d</a></li><li><a href="#11">Part e</a></li></ul></div><pre class="codeinput">clc;clear; close <span class="string">all</span>
+inputIm=phantom(128);
+imshow(inputIm)
+</pre><img vspace="5" hspace="5" src="myDriver_01.png" alt=""> <h2>Computing Radon transform of an Image<a name="2"></a></h2><pre class="codeinput">tic
+deltaS=0.5;
+R = myRadonTransform(inputIm,deltaS);<span class="comment">% computes Radon Transform of the</span>
+                                     <span class="comment">% input Phantom Image</span>
+figure
+imagesc(R);
+title(<span class="string">'Radon Transform with deltaS=0.5'</span>)
+toc
+
+tic
+deltaS=1;
+R = myRadonTransform(inputIm,deltaS);<span class="comment">% computes Radon Transform of the</span>
+                                     <span class="comment">% input Phantom Image</span>
+figure
+imagesc(R);
+title(<span class="string">'Radon Transform with deltaS=1'</span>)
+toc
+tic
+deltaS=3;
+R = myRadonTransform(inputIm,deltaS);<span class="comment">% computes Radon Transform of the</span>
+                                     <span class="comment">% input Phantom Image</span>
+figure
+imagesc(R);
+title(<span class="string">'Radon Transform with deltaS=3'</span>)
+toc
+</pre><pre class="codeoutput">Elapsed time is 15.308281 seconds.
+Elapsed time is 8.959684 seconds.
+Elapsed time is 5.362201 seconds.
+</pre><img vspace="5" hspace="5" src="myDriver_02.png" alt=""> <img vspace="5" hspace="5" src="myDriver_03.png" alt=""> <img vspace="5" hspace="5" src="myDriver_04.png" alt=""> <p><h3>Observation:</h3></p><pre>Here, we can clearly notice the that the time taken to compute the
+transform decreases and blurring increases with increasing deltaS as we
+are compromising on precision. deltaS=3 gives a blurred image while
+remaining two are fairly smooth, especially in the blue part. Hence an
+optimal choice would be deltaS=1 which is smooth and fast enough.</pre><h2>1-D plots of Radon Transform vs t for various theta<a name="5"></a></h2><pre class="codeinput">deltaS=0.5;
+figure
+theta=0;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=0 and deltaS=0.5'</span>)
+xlabel(<span class="string">'t (-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=90 and deltaS=0.5'</span>)
+xlabel(<span class="string">'t(-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+
+
+deltaS=1;
+figure
+theta=0;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=0 and deltaS=1'</span>)
+xlabel(<span class="string">'t (-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=90 and deltaS=1'</span>)
+xlabel(<span class="string">'t(-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+
+
+
+deltaS=3;
+figure
+theta=0;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=0 and deltaS=3'</span>)
+xlabel(<span class="string">'t (-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+<span class="keyword">for</span> i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+<span class="keyword">end</span>
+plot(t,R);
+title(<span class="string">'Plot of Rf(t) vs t for theta=90 and deltaS=3'</span>)
+xlabel(<span class="string">'t(-90 to 90 in steps of 5)'</span>)
+ylabel(<span class="string">'Radon Transform Value'</span>)
+</pre><img vspace="5" hspace="5" src="myDriver_05.png" alt=""> <img vspace="5" hspace="5" src="myDriver_06.png" alt=""> <img vspace="5" hspace="5" src="myDriver_07.png" alt=""> <img vspace="5" hspace="5" src="myDriver_08.png" alt=""> <img vspace="5" hspace="5" src="myDriver_09.png" alt=""> <img vspace="5" hspace="5" src="myDriver_10.png" alt=""> <p><h3>Observation:</h3></p><pre>Here, the plots with theta=90 are relatively smoother than theta=0 and
+are progressively getting sharper with deltaS. This is bcz the image has
+relatively shorter dark patches in X direction while it is fairly
+long in Y direction.</pre><h2>Part d<a name="8"></a></h2><p><h3>Observation:</h3></p><pre>The main tradeoff involved in choosing deltaT and deltaTheta is the
+larger resolution vs computation time. Lower steps are slower but
+smoother.</pre><pre class="codeinput">deltaS=0.5;
+R = myRadonTransformLowResolution(inputIm,deltaS);<span class="comment">% computes Radon Transform of the</span>
+                                                  <span class="comment">% input Phantom Image</span>
+figure
+imagesc(R);
+title(<span class="string">'Radon Transform with deltaS=0.5 but large deltaT'</span>)
+</pre><img vspace="5" hspace="5" src="myDriver_11.png" alt=""> <h2>Part e<a name="11"></a></h2><p><h3>Observation:</h3></p><p>ART is an iterative process. If deltaS is very low, we make worthless efforts but don't gain much information. On the other hand, if deltaS is large, we lose lot of information in successive iterations.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc;clear; close all
+inputIm=phantom(128);
+imshow(inputIm)
+
+%% Computing Radon transform of an Image
+
+tic
+deltaS=0.5;
+R = myRadonTransform(inputIm,deltaS);% computes Radon Transform of the 
+                                     % input Phantom Image
+figure                                     
+imagesc(R);
+title('Radon Transform with deltaS=0.5')
+toc
+
+tic
+deltaS=1;
+R = myRadonTransform(inputIm,deltaS);% computes Radon Transform of the 
+                                     % input Phantom Image
+figure                                     
+imagesc(R);
+title('Radon Transform with deltaS=1')
+toc
+tic
+deltaS=3;
+R = myRadonTransform(inputIm,deltaS);% computes Radon Transform of the 
+                                     % input Phantom Image
+figure                                     
+imagesc(R);
+title('Radon Transform with deltaS=3')
+toc
+
+%%
+% <html><h3>Observation:</h3></html>
+%%
+% 
+%  Here, we can clearly notice the that the time taken to compute the 
+%  transform decreases and blurring increases with increasing deltaS as we  
+%  are compromising on precision. deltaS=3 gives a blurred image while  
+%  remaining two are fairly smooth, especially in the blue part. Hence an 
+%  optimal choice would be deltaS=1 which is smooth and fast enough. 
+%  
+%% 1-D plots of Radon Transform vs t for various theta
+
+deltaS=0.5;
+figure
+theta=0; 
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=0 and deltaS=0.5')
+xlabel('t (-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value')
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=90 and deltaS=0.5')
+xlabel('t(-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value')    
+
+
+deltaS=1;
+figure
+theta=0; 
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=0 and deltaS=1')
+xlabel('t (-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value')
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=90 and deltaS=1')
+xlabel('t(-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value')    
+
+
+
+deltaS=3;
+figure
+theta=0; 
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=0 and deltaS=3')
+xlabel('t (-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value')
+
+figure
+theta=90;
+t=-90:5:90;
+m=length(t);
+R=zeros(1,m);
+for i=1:m
+    R(i)=myIntegration(t(i),theta,inputIm,deltaS);
+end
+plot(t,R);
+title('Plot of Rf(t) vs t for theta=90 and deltaS=3')
+xlabel('t(-90 to 90 in steps of 5)')
+ylabel('Radon Transform Value') 
+%%
+% <html><h3>Observation:</h3></html>
+%%
+% 
+%  Here, the plots with theta=90 are relatively smoother than theta=0 and
+%  are progressively getting sharper with deltaS. This is bcz the image has
+%  relatively shorter dark patches in X direction while it is fairly
+%  long in Y direction.
+%  
+%% Part d
+%%
+% <html><h3>Observation:</h3></html>
+%%
+% 
+%  The main tradeoff involved in choosing deltaT and deltaTheta is the  
+%  larger resolution vs computation time. Lower steps are slower but 
+%  smoother. 
+
+deltaS=0.5;
+R = myRadonTransformLowResolution(inputIm,deltaS);% computes Radon Transform of the 
+                                                  % input Phantom Image
+figure                                     
+imagesc(R);
+title('Radon Transform with deltaS=0.5 but large deltaT')
+%% Part e
+%%
+% <html><h3>Observation:</h3></html>
+%%
+% 
+% ART is an iterative process. If deltaS is very low, we make worthless efforts 
+% but don't gain much information. On the other hand, if deltaS is large,
+% we lose lot of information in successive iterations. 
+%  
+
+##### SOURCE END #####
+--></body></html>
