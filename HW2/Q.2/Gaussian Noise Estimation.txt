@@ -1,3 +1,0 @@
-Standard Deviation of real part of noise=0.0401
-
-Standard Deviation of real part of noise=0.0179

@@ -1,8 +1,0 @@
-rrmse between noisy and noiseless images=0.283
-
-optimal alpha=0.2
-
-rrmse at optimal alpha=0.222
-
-rrmse at 1.2 alpha=0.2248
-rrmase at 0.8 alpha=0.2301
