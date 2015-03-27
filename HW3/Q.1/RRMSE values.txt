@@ -1,0 +1,54 @@
+
+
+RRMSE between Noiseless Image and Noisy Image=0.2612
+
+
+
+1. Quadratic MRF:
+
+Optimal alpha = 0.935
+RRMSE at alpha* = 0.24
+
+RRMSE at 0.8alpha* = 0.2605
+1.2alpha* is beyond 1. Hence I'm reporting rrmse for alpha=0.999999 which is 0.56
+
+
+
+
+
+
+
+2. Huber MRF:
+
+Optimal alpha = 0.9993
+Optimal gamma = 0.005
+
+RRMSE at (alpha*,gamma*) = 0.185
+
+As alpha* is very close to 1, I'm unable to report RRMSE at (1.2alpha*,gamma*) 
+
+RRMSE at (0.8 alpha*,gamma*) = 0.2609
+
+RRMSE at (alpha*,1.2 gamma*) = 0.1868 (nearly same as that at optimal parameters)
+
+RRMSE at (alpha*,0.8 gamma*) = 0.1863 (nearly same as that at optimal parameters)
+
+
+
+
+
+
+3. Disc-Adaptive MRF:
+
+Optimal alpha = 0.99993
+Optimal gamma = 0.001
+
+RRMSE at (alpha*,gamma*) = 0.1861
+
+As alpha* is very close to 1, I'm unable to report RRMSE at (1.2alpha*,gamma*) 
+
+RRMSE at (0.8 alpha*,gamma*) = 0.2609
+
+RRMSE at (alpha*,1.2 gamma*) = 0.1879 (nearly same as that at optimal parameters)
+
+RRMSE at (alpha*,0.8 gamma*) = 0.1862 (nearly same as that at optimal parameters)

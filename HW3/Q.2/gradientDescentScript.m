@@ -1,7 +1,7 @@
 isConverged = false;
 stepSize = 0.000001;
-currentIm = initalIm;
-values = []; error_rrmse = [];
+currentIm = initialIm;
+values = []; 
 objPrev = Inf;
 numIter = 0;
 while(~isConverged)
@@ -45,7 +45,6 @@ while(~isConverged)
     objPrev = objCurr;
     
     values = [values log(objCurr)];
-    error_rrmse = [error_rrmse RRMSE(imageNoiseless,currentIm)];
+    
     numIter = numIter + 1;
 end
-rrmse_final = RRMSE(imageNoiseless,currentIm);
