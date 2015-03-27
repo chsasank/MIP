@@ -1,0 +1,11 @@
+rrmse between noisy and noiseless images=0.283
+
+optimal alpha=0.16gamma=1.3
+
+rrmse at (alpha*,gamma*)=0.2290
+
+rrmse at (alpha*,1.2gamma*)=0.2294
+rrmse at (alpha*,0.8gamma*)=0.2296
+
+rrmse at (1.2alpha*,gamma*)=0.2182, anamoly
+rrmse at (0.8alpha*,gamma*)=0.2421
