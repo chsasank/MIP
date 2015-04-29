@@ -1,0 +1,414 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myDriver</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-08"><meta name="DC.source" content="myDriver.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Load images</a></li><li><a href="#2">Cropping</a></li><li><a href="#3">kmeans for comparison</a></li><li><a href="#4">initialization</a></li><li><a href="#5">Actual algorithm</a></li></ul></div><h2>Load images<a name="1"></a></h2><pre class="codeinput">clc;clear;close <span class="string">all</span>
+load(<span class="string">'assignmentSegmentBrain.mat'</span>)
+inputIm=imageData.*imageMask;
+[m,n]=size(inputIm);
+</pre><h2>Cropping<a name="2"></a></h2><pre class="codeinput">a=sum(imageMask);
+b=sum(imageMask,2);
+rowMin=find(b~=0,1,<span class="string">'first'</span>);
+rowMax=find(b~=0,1,<span class="string">'last'</span>);
+columnMin=find(a~=0,1,<span class="string">'first'</span>);
+columnMax=find(a~=0,1,<span class="string">'last'</span>);
+
+rect=[columnMin rowMin columnMax-columnMin rowMax-rowMin];
+inputIm=imcrop(imageData.*imageMask,rect);
+[m,n]=size(inputIm);
+</pre><h2>kmeans for comparison<a name="3"></a></h2><pre class="codeinput">mat1=reshape(inputIm,[m*n,1]);
+[mat2,C]=kmeans(mat1,4);
+mat2=reshape(mat2,[m,n]);
+idx=find(C&lt;0.1);
+outIm=zeros(m,n,3);
+j=0;
+<span class="keyword">for</span> i=1:4
+    <span class="keyword">if</span> i~=idx
+        j=j+1;
+        outIm(:,:,j)=(mat2==i)*C(i);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><h2>initialization<a name="4"></a></h2><pre class="codeinput">values = []; <span class="comment">% to track objective Func values</span>
+K=3; <span class="comment">% no. of classes including bordering dark patch</span>
+q=5; <span class="comment">% membership fuzzyness parameter</span>
+
+weights=fspecial(<span class="string">'gaussian'</span>); <span class="comment">% weights for neighbourhood pixel</span>
+
+biasField=0.5*ones(m,n);
+
+
+
+<span class="comment">% initial memberships and class means</span>
+maxIm=max(max(inputIm));
+minIm=min(min(inputIm));
+range=maxIm-minIm;
+membership=zeros(m,n,K);
+classMeans=zeros(1,K);
+
+<span class="keyword">for</span> i=1:K
+   membership(:,:,i)=(inputIm&gt;=minIm+range*(i-1)/K).*(inputIm&lt; minIm+range*i/K);
+   classMeans(i)=minIm+range*(2*i-1)/(2*K);
+<span class="keyword">end</span>
+membership(:,:,K)=membership(:,:,K)+(inputIm==maxIm);
+
+<span class="comment">%classMeans=[0.0048 0.2533 0.6364 0.4574];% initial class means</span>
+classMeans=C(C&gt;0.1);
+</pre><h2>Actual algorithm<a name="5"></a></h2><pre class="codeinput">D=zeros(m,n,K);
+prevObjFunc=Inf;
+flag=true;
+iter=0;
+
+
+<span class="keyword">while</span>(flag)
+iter=iter+1;
+temp=zeros(m,n);
+convolution1=conv2(biasField.^2,weights,<span class="string">'same'</span>);
+convolution2=conv2(biasField,weights,<span class="string">'same'</span>);
+
+<span class="comment">% optimal membership</span>
+<span class="keyword">for</span> i=1:K
+D(:,:,i)=inputIm.^2+classMeans(i)^2*convolution1-2*classMeans(i)*(inputIm.*convolution2);
+D(:,:,i)=D(:,:,i)+(D(:,:,i)==0)*mean(mean(D(:,:,i)));
+membership(:,:,i)=D(:,:,i).^(1/1-q)/100;
+temp=temp+membership(:,:,i);
+<span class="keyword">end</span>
+
+temp2=zeros(m,n);
+temp3=zeros(m,n);
+
+<span class="comment">% optimal class means</span>
+<span class="keyword">for</span> i=1:K
+    membership(:,:,i)=membership(:,:,i)./temp;<span class="comment">% normalizing membership across K classes</span>
+    numerator=sum(sum(membership(:,:,i).^q.*inputIm.*convolution2));
+    denominator=sum(sum(membership(:,:,i).^q.*convolution1));
+    classMeans(i)=numerator/denominator;
+    temp2=temp2+membership(:,:,i).^q*classMeans(i);
+    temp3=temp3+membership(:,:,i).^q*classMeans(i)^2;
+<span class="keyword">end</span>
+
+<span class="comment">%optimal Bias field</span>
+biasField=conv2(inputIm.*temp2,weights,<span class="string">'same'</span>)./conv2(temp3,weights,<span class="string">'same'</span>);
+
+
+temp=zeros(m,n);
+
+<span class="keyword">for</span> i=1:K
+    temp=temp+(membership(:,:,i).^q).*D(:,:,i);
+<span class="keyword">end</span>
+
+currObjFunc=sum(sum(temp));
+
+
+<span class="keyword">if</span> abs(currObjFunc-prevObjFunc)/abs(currObjFunc)&lt;0.01 &amp;&amp; iter&gt;=200
+    flag=0;
+<span class="keyword">end</span>
+
+values = [values log(currObjFunc)];
+
+prevObjFunc=currObjFunc;<span class="comment">% objective function value reset</span>
+
+<span class="keyword">end</span>
+
+biasRemovedImage=zeros(m,n);
+
+<span class="keyword">for</span> i=1:K
+    biasRemovedImage=biasRemovedImage+membership(:,:,i)*classMeans(i);
+<span class="keyword">end</span>
+
+residualImage=inputIm-biasRemovedImage.*biasField;
+
+outputIm=zeros(m,n,3);
+<span class="keyword">for</span> i=1:3
+    outputIm(:,:,i)=membership(:,:,i)*classMeans(i);
+<span class="keyword">end</span>
+
+
+
+figure;plot(values)
+title(<span class="string">'log(objective function) at each iteration'</span>)
+
+figure;
+subplot(1,3,1)
+imshow(membership(:,:,1))
+title(<span class="string">'membsership to class 1'</span>)
+
+subplot(1,3,2)
+imshow(membership(:,:,2))
+title(<span class="string">'membsership to class 2'</span>)
+
+subplot(1,3,3)
+imshow(membership(:,:,3))
+title(<span class="string">'membsership to class 3'</span>)
+
+figure;
+subplot(2,2,1)
+imshow(inputIm)
+title(<span class="string">'corrupted input Image(cropped)'</span>)
+
+subplot(2,2,2)
+imshow(biasField)
+title(<span class="string">'Bias Removed Image'</span>)
+
+subplot(2,2,3)
+imshow(biasRemovedImage)
+title(<span class="string">'optimal bias field'</span>)
+
+subplot(2,2,4)
+imshow(residualImage)
+title(<span class="string">'residual Image'</span>)
+
+figure
+imshow(outIm)
+title(<span class="string">'segmented image'</span>)
+
+classMeans
+</pre><pre class="codeoutput">
+classMeans =
+
+    0.9447
+    0.6132
+    0.1362
+
+</pre><img vspace="5" hspace="5" src="myDriver_01.png" alt=""> <img vspace="5" hspace="5" src="myDriver_02.png" alt=""> <img vspace="5" hspace="5" src="myDriver_03.png" alt=""> <img vspace="5" hspace="5" src="myDriver_04.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Load images
+clc;clear;close all
+load('assignmentSegmentBrain.mat')
+inputIm=imageData.*imageMask;
+[m,n]=size(inputIm);
+
+%% Cropping
+
+a=sum(imageMask);
+b=sum(imageMask,2);
+rowMin=find(b~=0,1,'first');
+rowMax=find(b~=0,1,'last');
+columnMin=find(a~=0,1,'first');
+columnMax=find(a~=0,1,'last');
+
+rect=[columnMin rowMin columnMax-columnMin rowMax-rowMin];
+inputIm=imcrop(imageData.*imageMask,rect);
+[m,n]=size(inputIm);
+
+%% kmeans for comparison
+mat1=reshape(inputIm,[m*n,1]);
+[mat2,C]=kmeans(mat1,4);
+mat2=reshape(mat2,[m,n]);
+idx=find(C<0.1);
+outIm=zeros(m,n,3);
+j=0;
+for i=1:4
+    if i~=idx
+        j=j+1;
+        outIm(:,:,j)=(mat2==i)*C(i);
+    end
+end
+
+
+%% initialization
+
+values = []; % to track objective Func values 
+K=3; % no. of classes including bordering dark patch
+q=5; % membership fuzzyness parameter
+
+weights=fspecial('gaussian'); % weights for neighbourhood pixel
+
+biasField=0.5*ones(m,n);
+
+
+
+% initial memberships and class means
+maxIm=max(max(inputIm));
+minIm=min(min(inputIm));
+range=maxIm-minIm;
+membership=zeros(m,n,K);
+classMeans=zeros(1,K);
+
+for i=1:K  
+   membership(:,:,i)=(inputIm>=minIm+range*(i-1)/K).*(inputIm< minIm+range*i/K);
+   classMeans(i)=minIm+range*(2*i-1)/(2*K);
+end
+membership(:,:,K)=membership(:,:,K)+(inputIm==maxIm);
+
+%classMeans=[0.0048 0.2533 0.6364 0.4574];% initial class means
+classMeans=C(C>0.1);
+
+%% Actual algorithm
+
+D=zeros(m,n,K);
+prevObjFunc=Inf;
+flag=true;
+iter=0;
+
+
+while(flag)
+iter=iter+1;    
+temp=zeros(m,n); 
+convolution1=conv2(biasField.^2,weights,'same');
+convolution2=conv2(biasField,weights,'same');
+
+% optimal membership
+for i=1:K
+D(:,:,i)=inputIm.^2+classMeans(i)^2*convolution1-2*classMeans(i)*(inputIm.*convolution2);
+D(:,:,i)=D(:,:,i)+(D(:,:,i)==0)*mean(mean(D(:,:,i)));
+membership(:,:,i)=D(:,:,i).^(1/1-q)/100;
+temp=temp+membership(:,:,i);
+end
+
+temp2=zeros(m,n);
+temp3=zeros(m,n);
+
+% optimal class means
+for i=1:K
+    membership(:,:,i)=membership(:,:,i)./temp;% normalizing membership across K classes
+    numerator=sum(sum(membership(:,:,i).^q.*inputIm.*convolution2));
+    denominator=sum(sum(membership(:,:,i).^q.*convolution1));
+    classMeans(i)=numerator/denominator;
+    temp2=temp2+membership(:,:,i).^q*classMeans(i);
+    temp3=temp3+membership(:,:,i).^q*classMeans(i)^2;
+end
+
+%optimal Bias field
+biasField=conv2(inputIm.*temp2,weights,'same')./conv2(temp3,weights,'same');
+
+
+temp=zeros(m,n);
+
+for i=1:K
+    temp=temp+(membership(:,:,i).^q).*D(:,:,i);
+end
+
+currObjFunc=sum(sum(temp));
+
+
+if abs(currObjFunc-prevObjFunc)/abs(currObjFunc)<0.01 && iter>=200
+    flag=0;     
+end
+
+values = [values log(currObjFunc)];
+
+prevObjFunc=currObjFunc;% objective function value reset
+
+end
+
+biasRemovedImage=zeros(m,n);
+
+for i=1:K
+    biasRemovedImage=biasRemovedImage+membership(:,:,i)*classMeans(i);
+end
+
+residualImage=inputIm-biasRemovedImage.*biasField;
+
+outputIm=zeros(m,n,3);
+for i=1:3
+    outputIm(:,:,i)=membership(:,:,i)*classMeans(i);
+end
+
+
+
+figure;plot(values)
+title('log(objective function) at each iteration')
+
+figure;
+subplot(1,3,1)
+imshow(membership(:,:,1))
+title('membsership to class 1')
+
+subplot(1,3,2)
+imshow(membership(:,:,2))
+title('membsership to class 2')
+
+subplot(1,3,3)
+imshow(membership(:,:,3))
+title('membsership to class 3')
+
+figure;
+subplot(2,2,1)
+imshow(inputIm)
+title('corrupted input Image(cropped)')
+
+subplot(2,2,2)
+imshow(biasField)
+title('Bias Removed Image')
+
+subplot(2,2,3)
+imshow(biasRemovedImage)
+title('optimal bias field')
+
+subplot(2,2,4)
+imshow(residualImage)
+title('residual Image')
+
+figure
+imshow(outIm)
+title('segmented image')
+
+classMeans
+
+
+##### SOURCE END #####
+--></body></html>

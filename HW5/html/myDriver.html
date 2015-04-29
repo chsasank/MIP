@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myDriver</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-19"><meta name="DC.source" content="myDriver.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">unaligned point sets</a></li><li><a href="#3">shape mean calculation</a></li><li><a href="#4">modes of shape variability calculation</a></li></ul></div><pre class="codeinput">clc;clear;close <span class="string">all</span>
+load(<span class="string">'assignmentShapeAnalysis.mat'</span>)
+</pre><h2>unaligned point sets<a name="2"></a></h2><pre class="codeinput">figure
+<span class="keyword">for</span> i=1:numOfPointSets
+    hold <span class="string">on</span>
+    scatter(pointSets(1,:,i),pointSets(2,:,i))
+<span class="keyword">end</span>
+title(<span class="string">'unaligned point sets'</span>)
+
+<span class="comment">%%initialising mean point set</span>
+meanPtSet=mean(pointSets,3);
+
+meanPtSet=meanPtSet-repmat(mean(meanPtSet,2),1,size(meanPtSet,2)); <span class="comment">% making zero mean</span>
+
+meanPtSet=meanPtSet/sqrt(sum(sum(meanPtSet.^2))/size(meanPtSet,2));<span class="comment">% normalising the initial mean point set</span>
+</pre><img vspace="5" hspace="5" src="myDriver_01.png" alt=""> <h2>shape mean calculation<a name="3"></a></h2><pre class="codeinput">outPtSets=zeros(size(pointSets));
+flag=1;
+prevMean=meanPtSet;
+iter=0;
+<span class="keyword">while</span>(flag)
+    iter=iter+1;
+    <span class="keyword">for</span> i=1:size(pointSets,3)
+        outPtSets(:,:,i)=align(meanPtSet,pointSets(:,:,i));
+    <span class="keyword">end</span>
+    meanPtSet=mean(outPtSets,3);
+    <span class="keyword">if</span> sum(sum(abs(meanPtSet-prevMean)))/sum(sum(abs(prevMean)))&lt;0.01
+        flag=0;
+    <span class="keyword">else</span>
+        prevMean=meanPtSet;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure
+<span class="keyword">for</span> i=1:numOfPointSets
+    hold <span class="string">on</span>
+    scatter(outPtSets(1,:,i),outPtSets(2,:,i))
+<span class="keyword">end</span>
+title(<span class="string">'aligned point sets'</span>)
+
+
+figure
+<span class="keyword">for</span> i=1:numOfPointSets
+    hold <span class="string">on</span>
+    scatter(outPtSets(1,:,i),outPtSets(2,:,i),[],[0,1,0])
+<span class="keyword">end</span>
+
+hold <span class="string">on</span>
+scatter(meanPtSet(1,:),meanPtSet(2,:),[],[0,0,1])
+title(<span class="string">'aligned point sets with mean point set marked'</span>)
+</pre><img vspace="5" hspace="5" src="myDriver_02.png" alt=""> <img vspace="5" hspace="5" src="myDriver_03.png" alt=""> <h2>modes of shape variability calculation<a name="4"></a></h2><pre class="codeinput">outPtSets=reshape(outPtSets,[size(pointSets,1)*size(pointSets,2),size(pointSets,3)]);
+
+[COEFF,~,latent]=pcacov(outPtSets');
+figure
+plot(latent)
+title(<span class="string">'eigen values/variances of principal modes'</span>)
+
+V=reshape(COEFF,[size(pointSets,1),size(pointSets,2),size(COEFF,2)]);
+
+figure
+subplot(2,2,1)
+scatter(V(1,:,1),V(2,:,1))
+subplot(2,2,2)
+scatter(V(1,:,2),V(2,:,2))
+subplot(2,2,3)
+scatter(V(1,:,3),V(2,:,3))
+subplot(2,2,4)
+scatter(V(1,:,4),V(2,:,4))
+title(<span class="string">'first 4 principal components of shape variation'</span>)
+</pre><img vspace="5" hspace="5" src="myDriver_04.png" alt=""> <img vspace="5" hspace="5" src="myDriver_05.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc;clear;close all
+load('assignmentShapeAnalysis.mat')
+%% unaligned point sets
+figure
+for i=1:numOfPointSets
+    hold on
+    scatter(pointSets(1,:,i),pointSets(2,:,i))
+end
+title('unaligned point sets')
+
+%%initialising mean point set
+meanPtSet=mean(pointSets,3);
+
+meanPtSet=meanPtSet-repmat(mean(meanPtSet,2),1,size(meanPtSet,2)); % making zero mean 
+
+meanPtSet=meanPtSet/sqrt(sum(sum(meanPtSet.^2))/size(meanPtSet,2));% normalising the initial mean point set 
+
+%% shape mean calculation
+outPtSets=zeros(size(pointSets));
+flag=1;
+prevMean=meanPtSet;
+iter=0;
+while(flag)
+    iter=iter+1;
+    for i=1:size(pointSets,3)
+        outPtSets(:,:,i)=align(meanPtSet,pointSets(:,:,i));
+    end
+    meanPtSet=mean(outPtSets,3);
+    if sum(sum(abs(meanPtSet-prevMean)))/sum(sum(abs(prevMean)))<0.01
+        flag=0;
+    else
+        prevMean=meanPtSet;
+    end
+end
+
+figure
+for i=1:numOfPointSets
+    hold on
+    scatter(outPtSets(1,:,i),outPtSets(2,:,i))
+end
+title('aligned point sets')
+
+
+figure
+for i=1:numOfPointSets
+    hold on
+    scatter(outPtSets(1,:,i),outPtSets(2,:,i),[],[0,1,0])
+end
+
+hold on 
+scatter(meanPtSet(1,:),meanPtSet(2,:),[],[0,0,1])
+title('aligned point sets with mean point set marked')
+
+
+%% modes of shape variability calculation
+
+outPtSets=reshape(outPtSets,[size(pointSets,1)*size(pointSets,2),size(pointSets,3)]);
+
+[COEFF,~,latent]=pcacov(outPtSets'); 
+figure
+plot(latent)
+title('eigen values/variances of principal modes')
+
+V=reshape(COEFF,[size(pointSets,1),size(pointSets,2),size(COEFF,2)]);
+
+figure
+subplot(2,2,1)
+scatter(V(1,:,1),V(2,:,1))
+subplot(2,2,2)
+scatter(V(1,:,2),V(2,:,2))
+subplot(2,2,3)
+scatter(V(1,:,3),V(2,:,3))
+subplot(2,2,4)
+scatter(V(1,:,4),V(2,:,4))
+title('first 4 principal components of shape variation')
+
+
+
+##### SOURCE END #####
+--></body></html>

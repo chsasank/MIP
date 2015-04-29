@@ -1,0 +1,9 @@
+1. Chosen q=5
+
+2. Neighbourhood mask was a gaussian filter of size 3*3
+
+I've performed normal kMeans and obtained the classes and class means.  
+
+3. Hence initial memberships are from K-Means
+
+4. Initial class means are from K-means
