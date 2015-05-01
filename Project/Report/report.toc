@@ -1,0 +1,7 @@
+\contentsline {section}{\numberline {0.1}Introduction}{2}
+\contentsline {section}{\numberline {0.2}Theorem supporting recovery by basis pursuit}{2}
+\contentsline {section}{\numberline {0.3}Iteratively Reweighted Least Squares(IRLS) Algorithm}{2}
+\contentsline {section}{\numberline {0.4}IRL1 variant of previous algorithm}{3}
+\contentsline {section}{\numberline {0.5}Dataset}{3}
+\contentsline {section}{\numberline {0.6}Implementation}{3}
+\contentsline {section}{\numberline {0.7}Results}{3}
